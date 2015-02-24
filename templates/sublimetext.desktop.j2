@@ -1,0 +1,28 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version={{ sublimetext_major }}
+Name=sublimetext {{ sublimetext_version }}
+GenericName=Text Editor
+
+Exec={{ sublimetext_base_dir }}/sublimetext-{{ sublimetext_major }}/sublimetext
+Terminal=false
+#Icon=/usr/lib/sublimetext/icon.xpm
+#** something like /opt/sublimetext/icon.xpm **
+Icon={{ sublimetext_base_dir }}/sublimetext-{{ sublimetext_major }}/Icon/48x48/sublime_text.png
+Type=Application
+Categories=IDE;Development
+Comment=Integrated Development Environment
+NoDisplay=false
+StartupNotify=false
+StartupWMClass=sublimetext
+OnlyShowIn=Unity;
+X-UnityGenerated=true
+
+X-Ayatana-Desktop-Shortcuts=NewWindow
+
+[NewWindow Shortcut Group]
+Name=New Window
+#Exec=sublimetext -n
+# ** something like /opt/sublimetext/sublimetext **
+Exec={{ sublimetext_base_dir }}/sublimetext-{{ sublimetext_major }}/sublimetext
+TargetEnvironment=Unity

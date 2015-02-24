@@ -1,0 +1,89 @@
+---
+# This playbook contains common plays to install sublimetext.
+
+- name: sublimetext | Check user exists
+  user: name={{sublimetext_owner}} state=present
+
+- name: sublimetext | Check user home directory
+  stat: path={{sublimetext_owner_home}}
+  register: home_present
+
+- debug: msg=" sublimetext | Path exists and is a directory"
+  when: home_present.stat.isdir is defined and home_present.stat.isdir == true
+
+- name: sublimetext | Create temporary directory
+  shell: mktemp -d
+  register: tempdir
+  tags: sublimetext_setup
+
+- name: sublimetext | Download sublimetext
+  get_url:
+    url="{{sublimetext_url}}"
+    dest="{{ sublimetext_dir_tmp }}/{{sublimetext_archive}}"
+  register: sublimetext_download
+  tags: sublimetext_setup
+
+- name: sublimetext | Create base directory
+  file:
+    dest="{{sublimetext_base_dir}}/sublimetext-{{sublimetext_name}}"
+    state=directory
+    owner="{{sublimetext_owner}}"
+    group="{{sublimetext_group}}"
+  sudo : yes
+  when: sublimetext_download.changed
+  tags: sublimetext_setup
+
+- name: sublimetext | Install tar
+  apt:
+    pkg=tar
+    state="present"
+  tags: sublimetext_setup
+
+- name: sublimetext | Extract archive sublimetext
+  command: tar jxf {{ sublimetext_dir_tmp }}/{{sublimetext_archive}} -C {{sublimetext_base_dir}}/sublimetext-{{sublimetext_name}} --strip-components=1
+  when: sublimetext_download.changed
+
+- name: sublimetext | Change archive sublimetext ownership
+  file: path={{sublimetext_base_dir}}/sublimetext-{{sublimetext_name}} owner={{sublimetext_owner}} state=directory recurse=yes
+  when: sublimetext_download.changed
+
+- name: sublimetext | Stat {{sublimetext_base_dir}}/sublimetext-{{sublimetext_name}}
+  stat: path={{sublimetext_base_dir}}/sublimetext-{{sublimetext_name}}
+  register: sublimetext_archive_extracted_present
+
+- debug: msg=" sublimetext | Path exists and is a directory"
+  when: sublimetext_archive_extracted_present.stat.isdir is defined and sublimetext_archive_extracted_present.stat.isdir == true
+
+- fail: msg=" sublimetext | Whoops! file ownership has changed"
+  when: sublimetext_archive_extracted_present.stat.pw_name != '{{sublimetext_owner}}'
+
+- name: sublimetext | Create a link to sublimetext (1)
+  file:
+    src="{{sublimetext_base_dir}}/sublimetext-{{sublimetext_name}}"
+    dest="{{sublimetext_base_dir}}/sublimetext-{{sublimetext_major}}"
+    state=link
+    owner="{{sublimetext_owner}}"
+#    group="{{sublimetext_group}}"
+  tags: sublimetext_setup
+
+- name: sublimetext | Create a link to sublimetext (2)
+  file:
+    src="{{sublimetext_base_dir}}/sublimetext-{{sublimetext_name}}"
+    dest="{{sublimetext_link_base_dir}}/sublimetext-{{sublimetext_major}}"
+    state=link
+    owner="{{sublimetext_owner}}"
+#    group="{{sublimetext_group}}"
+  sudo: yes
+  tags: sublimetext_setup
+  
+- name: sublimetext | Configure sublimetext icon
+  template: src=sublimetext.desktop.j2 dest={{ sublimetext_owner_home }}/.local/share/applications/sublimetext.desktop
+  when: (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
+  ignore_errors: yes
+  tags: sublimetext_setup
+
+- name: sublimetext | Cleanup temporary directory
+  file: name={{ tempdir.stdout }} state=absent
+  tags: sublimetext_setup
+
+- debug: msg=" sublimetext | Start sublimetext {{sublimetext_base_dir}}/sublimetext-{{sublimetext_major}}/sublime_text"
