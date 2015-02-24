@@ -77,10 +77,13 @@
   tags: sublimetext_setup
   
 - name: sublimetext | Configure sublimetext icon
-  template: src=sublimetext.desktop.j2 dest={{ sublimetext_owner_home }}/.local/share/applications/sublimetext.desktop
+  template: src=sublimetext.desktop.j2 dest={{ sublimetext_owner_home }}/.local/share/applications/sublime_text.desktop
   when: (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
   ignore_errors: yes
   tags: sublimetext_setup
+
+#TODO
+#sudo update-desktop-database
 
 - name: sublimetext | Cleanup temporary directory
   file: name={{ tempdir.stdout }} state=absent
