@@ -11,7 +11,7 @@ sublimetext_base_dir: "/usr/local/sublimetext"
 sublimetext_link_base_dir: "/opt"
 sublimetext_dir_tmp: "/tmp" # or override with "{{ tempdir.stdout }} in order to have be sure to download the file"
 
-## Most likely you dont need to edit 
+## Most likely you dont need to edit
 #todo sublimetext_service_enabled   : 'yes'
 sublimetext_major: "2"
 sublimetext_minor: "0.2"
@@ -25,10 +25,5 @@ sublimetext_architecture: "{{ sublimetext_architecture_64 }}"
 #http://c758482.r82.cf2.rackcdn.com/Sublime%20Text%20{{ sublimetext_version }}{{ sublimetext_architecture }}.tar.bz2
 sublimetext_archive: "Sublime%20Text%20{{ sublimetext_version }}{{ sublimetext_architecture }}.tar.bz2"
 
-#modeling
-#sublimetext_url: "https://www.sublimetext.org/downloads/download.php?file=/technology/epp/downloads/release/{{sublimetext_name}}/R/{{sublimetext_archive}}&r=1"
-#java
-#sublimetext_url: "https://www.sublimetext.org/downloads/download.php?file=/technology/epp/downloads/release/{{sublimetext_name}}/SR1/{{sublimetext_archive}}&r=1"
-#javaee
 sublimetext_url: "http://c758482.r82.cf2.rackcdn.com/{{sublimetext_archive}}"
 sublimetext_home_dir: "{{sublimetext_base_dir}}/{{sublimetext_name}}-{{sublimetext_version}}"
