@@ -29,7 +29,7 @@
     state=directory
     owner="{{sublimetext_owner}}"
     group="{{sublimetext_group}}"
-  sudo : yes
+  become : yes
   when: sublimetext_download.changed
   tags: sublimetext_setup
 
@@ -73,7 +73,7 @@
     state=link
     owner="{{sublimetext_owner}}"
 #    group="{{sublimetext_group}}"
-  sudo: yes
+  become: yes
   tags: sublimetext_setup
   
 - name: sublimetext | Configure sublimetext icon
@@ -88,5 +88,8 @@
 - name: sublimetext | Cleanup temporary directory
   file: name={{ tempdir.stdout }} state=absent
   tags: sublimetext_setup
-
+  changed_when: false    
+  ignore_errors: "{{ ansible_check_mode }}"    
+  become: yes
+  
 - debug: msg=" sublimetext | Start sublimetext {{sublimetext_base_dir}}/sublimetext-{{sublimetext_major}}/sublime_text"
