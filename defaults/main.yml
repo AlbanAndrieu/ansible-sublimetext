@@ -9,7 +9,8 @@ home: "{{ lookup('env','HOME') }}"
 sublimetext_owner_home: "{{ home }}"
 sublimetext_base_dir: "/usr/local/sublimetext"
 sublimetext_link_base_dir: "/opt"
-sublimetext_dir_tmp: "/tmp" # or override with "{{ tempdir.stdout }} in order to have be sure to download the file"
+#sublimetext_dir_tmp: "/tmp" # or override with "{{ tempdir.stdout }} in order to have be sure to download the file"
+sublimetext_dir_tmp: "{{ tempdir.stdout }}"
 
 ## Most likely you dont need to edit
 #todo sublimetext_service_enabled   : 'yes'
